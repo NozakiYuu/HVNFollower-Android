@@ -1,6 +1,0 @@
-﻿List<Notifications> noti = new List<Notifications>();
-            Notifications sample_noti = new Notifications {
-                id = 1, time = DateTime.Now.ToString(), href = "sample href", text = "Đây là thông báo mẫu"
-            };
-            noti.Add(sample_noti);
-            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\LilShieru\\HVNFollower\\History.tmp", JsonConvert.SerializeObject(noti));
