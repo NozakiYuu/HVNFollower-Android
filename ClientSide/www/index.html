@@ -1,0 +1,40 @@
+<html><head>
+<meta name="format-detection" content="telephone=no" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+<title>HVN Follower</title>
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+<link href='http://ichika.shiru2005.tk/HVNFollower/style.css' rel='stylesheet'>
+<style>
+body{ font-family: Roboto, arial, sans-serif }
+
+#overlay{
+  position:fixed;
+  z-index:99999;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  transition: 1s 0.4s;
+}
+#loading{
+  font-size: 20px;
+  position:absolute;
+  top:50%;
+  width:100%;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+  <div id="overlay">
+    <div id="loading">Đang tải dữ liệu, xin vui lòng chờ...</div>
+  </div>
+  <div id="ajax" style="display:none">
+  </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  <script>
+    app.initialize();
+  </script>
+  <script src="js/jquery.js"></script>
