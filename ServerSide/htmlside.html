@@ -29,7 +29,7 @@
     </div>
     <div id="container">
       <div id="mainMenu">
-        <div id="bulletin"><div class="update">Đã sửa lỗi thời gian bị undefined khi thông báo chủ thớt có tên mới.</div><div class="update">App đã dần đi vào ổn định với thời gian cập nhật thấp nhất là 10 giây. Nếu thấy lỗi spam thông báo thì hãy thử chỉnh thời gian cập nhật lên và thử lại.</div><div class="warning">Nếu mà bạn nhìn thấy lỗi JSON trong khi đang cập nhật Chủ thớt hay thông báo không tồn tại, thì có nghĩa là app tạm thời không thể lấy được thông tin từ bên HentaiVN, lúc đó hãy thử thoát ra và vào lại sau một lúc!</div></div><br>
+        <div id="bulletin"><div class="update">Đã thêm tính năng Báo cáo lỗi. Từ giờ bạn đã có thể báo cáo lỗi cho LilShieru!</div><div class="update">App đã dần đi vào ổn định với thời gian cập nhật thấp nhất là 10 giây. Nếu thấy lỗi spam thông báo thì hãy thử chỉnh thời gian cập nhật lên và thử lại.</div><div class="warning">Nếu mà bạn nhìn thấy lỗi JSON trong khi đang cập nhật Chủ thớt hay thông báo không tồn tại, thì có nghĩa là app tạm thời không thể lấy được thông tin từ bên HentaiVN, lúc đó hãy thử thoát ra và vào lại sau một lúc!</div></div><br>
         <div id="beginText">Nhập Link User của Chủ thớt (https://hentaivn.net/user-xxxxx):</div>
         <input id="usrLink">
         <div style="text-align:center">
@@ -63,7 +63,10 @@
        <div>Chỉnh sửa những cài đặt này sẽ làm ảnh hưởng đến cách thức hoạt động của HVN Follower. Chỉ chỉnh sửa những cài đặt này khi bạn hiểu chúng.</div><br>
        <div>Thời gian cập nhật (giây): <span style="float:right"><input type="number" id="updateTime" min="5" max="100" style="width:64px;height:32px"/></span></div><br>
        <div>Bật thông báo: <span style="float:right"><input type="checkbox" id="enableNotifications" style="width:32px;height:32px"/></span></div><br><br>
-       <div style="text-align:center"><button onclick="SaveSettings()">Lưu</button></div>
+       <div style="text-align:center"><button onclick="SaveSettings()">Lưu</button></div><br><button style="width:100%" onclick="ConfirmBugReport()">Báo cáo lỗi cho LilShieru</button><br><br>
+       <a href="#" onclick="Debug()" id="debugBtn">Bật chế độ gỡ lỗi</a><br>
+       <div id="debugResult"></div><br>
+       <div id="info">HVN Follower (phiên bản <b id="versionInfo"></b>)<br>Được cập nhật vào ngày <b id="updateInfo"></b>.<br>Được viết bởi LilShieru (Kirahoshi Shieru) vào năm 2020. Cảm ơn bạn đã sử dụng app này!<br><br><a href="#" onclick="navigator.app.loadUrl('https://hentaivn.net/forum/nhan_tin.php?user=108808', {openExternal:true})">Nhắn tin cho LilShieru</a> | <a href="#" onclick="navigator.app.loadUrl('https://github.com/LilShieru', {openExternal:true})">GitHub</a></div>
      </div>
     </div>
   </div>
