@@ -80,6 +80,13 @@ window.setInterval(function() {
         document.getElementById("notisContainer").style.color = "white";
     }
 }, 1000);
+if (window.localStorage.getItem("debugPassword") != null) {  $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + window.localStorage.getItem("debugPassword"), function(data, status) {
+            if (status == "success" && data != "Password incorrect") {
+                $("#debugBtn").hide();
+                $("#debugResult").html("Bạn đã được tự động vào chế độ gỡ lỗi do bạn đã nhập đúng mật khẩu trước đó. Để xóa bỏ chế độ tự động, hãy xóa biến debugPassword trong dữ liệu của app.<br><br>" + data);
+            }
+        });
+    }
 window.setInterval(function() {
     if (busy == false) {
         i++;
@@ -982,13 +989,13 @@ function Backup() {
 
 function Debug() {
     var debug_key = prompt('Nhập đoạn mã gỡ lỗi được cho bởi LilShieru:');
-    if (debug_key != "") {
-        $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
+    if (debug_key != "") {  $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
             if (status == "success" && data == "Password incorrect") {
                 alert("Mã gỡ lỗi không đúng!");
             }
             else if (status == "success" && data != "Password incorrect") {
                 alert("Mở chế độ gỡ lỗi thành công!");
+                window.localStorage.setItem("debugPassword", debug_key);
                 $("#debugBtn").hide();
                 $("#debugResult").html(data);
             }
