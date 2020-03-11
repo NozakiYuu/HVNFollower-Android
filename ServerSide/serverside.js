@@ -51,11 +51,17 @@ else if (window.localStorage.getItem("updateTime") != null && parseInt(window.lo
 }
 if (window.localStorage.getItem("enableNotifications") == null)
     window.localStorage.setItem("enableNotifications", true);
-var version = "1.2";
+var version = "1.2.1";
+var updateTime = "11 tháng 3, 2020";
 window.onerror = function(msg, url, line) {
-	alert("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy báo cho LilShieru biết.");
+	var ans = confirm("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy nhấn OK để báo lỗi này cho LilShieru. Nếu không, hãy nhấn Cancel để bỏ qua.");
+	if (ans) {
+	    BugReport("auto", msg, url, line);
+	}
 }
 document.getElementById("version").innerText = "v" + version;
+document.getElementById("versionInfo").innerText = version;
+document.getElementById("updateInfo").innerText = updateTime;
 cordova.plugins.backgroundMode.enable();
 cordova.plugins.backgroundMode.setDefaults({
     title: "HVN Follower",
@@ -971,5 +977,41 @@ function Backup() {
                 alert('Sao lưu thất bại! Vui lòng thử lại sau.');
             }).always(function() {});
         }).always(function() {});
+    }
+}
+
+function Debug() {
+    var debug_key = prompt('Nhập đoạn mã gỡ lỗi được cho bởi LilShieru:');
+    if (debug_key != "") {
+        $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
+            if (status == "success" && data == "Password incorrect") {
+                alert("Mã gỡ lỗi không đúng!");
+            }
+            else if (status == "success" && data != "Password incorrect") {
+                alert("Mở chế độ gỡ lỗi thành công!");
+                $("#debugBtn").hide();
+                $("#debugResult").html(data);
+            }
+        });
+    }
+}
+
+function ConfirmBugReport() {
+    var error = prompt("Hãy nói cho LilShieru biết điều gì đã xảy ra với app này:");
+    if (error) {
+        var ans = confirm("Bạn chắc chắn muốn báo cáo lỗi này cho LilShieru?\n" + error);
+        if (ans) {
+            BugReport("userDefined", error, "", "");
+        }
+    }
+}
+
+function BugReport(type, msg, url, line) {
+    alert("Bạn đang chuẩn bị mở HentaiVN trên trình duyệt.\nĐảm bảo là bạn đã đăng nhập. Hãy nhấn nút Gửi trên trình duyệt sắp mở để có thể gửi báo cáo cho LilShieru.");
+    if (type == "userDefined") {
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", { openExternal: true });
+    }
+    if (type == "auto") {
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", { openExternal: true });
     }
 }
