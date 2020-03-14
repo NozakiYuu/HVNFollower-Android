@@ -1,4 +1,4 @@
-  <div id="main-container">
+<div id="main-container">
 	<style>
 		#bulletin .warning {
 			font-size: 12px;
@@ -29,7 +29,7 @@
     </div>
     <div id="container">
       <div id="mainMenu">
-        <div id="bulletin"><div class="update">Đã thêm tính năng Báo cáo lỗi. Từ giờ bạn đã có thể báo cáo lỗi cho LilShieru!</div><div class="update">App đã dần đi vào ổn định với thời gian cập nhật thấp nhất là 10 giây. Nếu thấy lỗi spam thông báo thì hãy thử chỉnh thời gian cập nhật lên và thử lại.</div><div class="warning">Nếu mà bạn nhìn thấy lỗi JSON trong khi đang cập nhật Chủ thớt hay thông báo không tồn tại, thì có nghĩa là app tạm thời không thể lấy được thông tin từ bên HentaiVN, lúc đó hãy thử thoát ra và vào lại sau một lúc!</div></div><br>
+        <div id="bulletin"><div class="update">Đã thêm tính năng chỉ thông báo và không thông báo có truyện mới khi lọc các thể loại đã ghi!<br>Hãy tìm hiểu thêm trong phần <a href="#" onclick="Settings()">Cài đặt</a>.</div><div class="update">App đã dần đi vào ổn định với thời gian cập nhật thấp nhất là 10 giây. Nếu thấy lỗi spam thông báo thì hãy thử chỉnh thời gian cập nhật lên và thử lại.</div><div class="warning">Nếu mà bạn nhìn thấy lỗi JSON trong khi đang cập nhật Chủ thớt hay thông báo không tồn tại, thì có nghĩa là app tạm thời không thể lấy được thông tin từ bên HentaiVN, lúc đó hãy thử thoát ra và vào lại sau một lúc!</div></div><br>
         <div id="beginText">Nhập Link User của Chủ thớt (https://hentaivn.net/user-xxxxx):</div>
         <input id="usrLink">
         <div style="text-align:center">
@@ -62,7 +62,9 @@
      <div id="settings" style="display:none">
        <div>Chỉnh sửa những cài đặt này sẽ làm ảnh hưởng đến cách thức hoạt động của HVN Follower. Chỉ chỉnh sửa những cài đặt này khi bạn hiểu chúng.</div><br>
        <div>Thời gian cập nhật (giây): <span style="float:right"><input type="number" id="updateTime" min="5" max="100" style="width:64px;height:32px"/></span></div><br>
-       <div>Bật thông báo: <span style="float:right"><input type="checkbox" id="enableNotifications" style="width:32px;height:32px"/></span></div><br><br>
+       <div>Bật thông báo: <span style="float:right"><input type="checkbox" id="enableNotifications" style="width:32px;height:32px"/></span></div><br>
+       <div>Chỉ thông báo có Truyện mới nếu như có các thể loại này: (Cách nhau bằng dấu chấm phẩy ";") <span style="float:right"><input id="tagContains" style="width:150px;height:32px"/></span></div><br>
+       <div>Không thông báo có Truyện mới nếu như có các thể loại này: (Cách nhau bằng dấu chấm phẩy ";") <span style="float:right"><input id="tagException" style="width:150px;height:32px"/></span></div><br><br>
        <div style="text-align:center"><button onclick="SaveSettings()">Lưu</button></div><br><button style="width:100%" onclick="ConfirmBugReport()">Báo cáo lỗi cho LilShieru</button><br><br>
        <a href="#" onclick="Debug()" id="debugBtn">Bật chế độ gỡ lỗi</a><br>
        <div id="debugResult"></div><br>
@@ -116,7 +118,7 @@
 <h3 style="text-align:center;width: 50%;display: inline-block;" id="okBtn" onclick="ConfirmAddUsr()">OK</h3><h3 id="cancelBtn" style="text-align:center;width: 50%;display: inline-block;" onclick="modal.style.display='none';document.getElementById('status').innerText = 'Sẵn sàng.';document.getElementById('usrLink').value = '';">Hủy bỏ</h3>
     </div>
   </div>
+  <script src="https://kit.fontawesome.com/25374f42b4.js" crossorigin="anonymous"></script>
 
   </div>
-  <script src="https://kit.fontawesome.com/25374f42b4.js" crossorigin="anonymous"></script>
   <script type="text/javascript" src="http://ichika.shiru2005.tk/HVNFollower/serverside.js" charset="UTF-8"></script>
