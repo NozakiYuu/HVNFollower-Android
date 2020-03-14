@@ -10,6 +10,18 @@ if ($_GET["id"]) {
    $finder = new DomXPath($doc);
    $nodes = $finder->query("//*[contains(@class, 'wall-name')]//h2");
    $info->displayName = $nodes[0]->textContent;
+   $content = $finder->query("//*[contains(@class, 'item remove_')][1]//div[contains(@class, 'box-description')][1]");
+   if (strpos($content[0]->textContent, "Tên Khác:") !== false) {
+      $tags = $finder->query("//*[contains(@class, 'item remove_')][1]//div[contains(@class, 'box-description')][1]//p//span//a[contains(@class, 'tag')][1]");
+   }
+   else {
+      $tags = $finder->query("//*[contains(@class, 'item remove_')][1]//div[contains(@class, 'box-description')][1]//p//span//a[contains(@class, 'tag')][1]");
+   }
+   $tagString = "";
+   for ($i = 0; $i < count($tags); $i++){
+      $tagString = $tagString . '' . $tags[$i]->textContent . ',';
+   }
+   $info->tags = substr($tagString, 0, strlen($tagString) - 1);
    $info->avatar = $finder->evaluate("string(//div[@class='wall-avatar']//img/@src)");
    $info->comicLink = "https://hentaivn.net" . $finder->evaluate("string(//*[contains(@class, 'item remove_')]//div[contains(@class, 'box-description')]//h2//a/@href)");
    if ($info->displayName == null)
