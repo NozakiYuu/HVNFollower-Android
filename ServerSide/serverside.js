@@ -203,14 +203,19 @@ window.setInterval(function() {
                 var tags = comicInfo.tags;
                 tags = tags.split(",");
                 var contains = false;
-                for (var x = 0; x < tags.length; x++) {
+                if (tagContains.length != 0) {
+                    for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
-                        for (var y = 0; y < tagContains.length; y++) {
-                            if (tags[x] == tagContains[y]) {
-                                contains = true;
+                            for (var y = 0; y < tagContains.length; y++) {
+                                if (tags[x] == tagContains[y]) {
+                                     contains = true;
+                                }
                             }
-                        }
-                    }
+                         }
+                     }
+                }
+                else {
+                    contains = true;
                 }
                 var excepted = false;
                 for (var x = 0; x < tags.length; x++) {
@@ -282,14 +287,19 @@ window.setInterval(function() {
                 var tags = comicInfo.tags;
                 tags = tags.split(",");
                 var contains = false;
-                for (var x = 0; x < tags.length; x++) {
+                if (tagContains.length != 0) {
+                    for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
-                        for (var y = 0; y < tagContains.length; y++) {
-                            if (tags[x] == tagContains[y]) {
-                                contains = true;
+                            for (var y = 0; y < tagContains.length; y++) {
+                                if (tags[x] == tagContains[y]) {
+                                     contains = true;
+                                }
                             }
-                        }
-                    }
+                         }
+                     }
+                }
+                else {
+                    contains = true;
                 }
                 var excepted = false;
                 for (var x = 0; x < tags.length; x++) {
@@ -361,14 +371,19 @@ window.setInterval(function() {
                 var tags = comicInfo.tags;
                 tags = tags.split(",");
                 var contains = false;
-                for (var x = 0; x < tags.length; x++) {
+                if (tagContains.length != 0) {
+                    for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
-                        for (var y = 0; y < tagContains.length; y++) {
-                            if (tags[x] == tagContains[y]) {
-                                contains = true;
+                            for (var y = 0; y < tagContains.length; y++) {
+                                if (tags[x] == tagContains[y]) {
+                                     contains = true;
+                                }
                             }
-                        }
-                    }
+                         }
+                     }
+                }
+                else {
+                    contains = true;
                 }
                 var excepted = false;
                 for (var x = 0; x < tags.length; x++) {
@@ -440,14 +455,19 @@ window.setInterval(function() {
                 var tags = comicInfo.tags;
                 tags = tags.split(",");
                 var contains = false;
-                for (var x = 0; x < tags.length; x++) {
+                if (tagContains.length != 0) {
+                    for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
-                        for (var y = 0; y < tagContains.length; y++) {
-                            if (tags[x] == tagContains[y]) {
-                                contains = true;
+                            for (var y = 0; y < tagContains.length; y++) {
+                                if (tags[x] == tagContains[y]) {
+                                     contains = true;
+                                }
                             }
-                        }
-                    }
+                         }
+                     }
+                }
+                else {
+                    contains = true;
                 }
                 var excepted = false;
                 for (var x = 0; x < tags.length; x++) {
@@ -763,4 +783,367 @@ function addAuthor() {
                                 id: userid,
                                 name: info.displayName
                             };
-                            window.localStorage.setI
+                            window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+                            alert('Thêm Tác giả thành công!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        } else {
+                            alert('Bạn đã thêm Tác giả này rồi!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        }
+                    }
+                }
+            } else {
+                document.getElementById("status").innerText = "Không thể lấy được thông tin!";
+            }
+        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+    } else {
+        alert("Tên tác giả không hợp lệ!");
+    }
+}
+
+function addDoujin() {
+    document.getElementById("status").innerText = "Đang kiểm tra thông tin...";
+    var value = document.getElementById("usrLink").value;
+    if (value.indexOf("https://") == -1 && value.length > 0) {
+        var userid = value.replace(" ", "+");
+        $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetDoujinInfo.php?id=" + userid, function(data, status) {
+            if (status == "success") {
+                if (data == "Doujin is invalid") {
+                    alert('Doujinshi này không tồn tại!');
+                    document.getElementById("status").innerText = "Sẵn sàng.";
+                } else {
+                    document.getElementById("status").innerText = "Lấy thông tin thành công!";
+                    var info = JSON.parse(data);
+                    var ans = confirm("Thêm Doujinshi " + info.displayName + " vào Danh sách theo dõi?");
+                    if (ans) {
+                        var exist = false,
+                            i;
+                        for (i = 0; i < JSONData.doujin.length; i++) {
+                            if (JSONData.doujin[i].name != info.displayName) {
+                                if (!exist) {
+                                    exist = false;
+                                }
+                            } else {
+                                exist = true;
+                            }
+                        }
+                        if (exist == false) {
+                            JSONData.doujin[JSONData.doujin.length] = {
+                                id: userid,
+                                name: info.displayName
+                            };
+                            window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+                            alert('Thêm Doujinshi thành công!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        } else {
+                            alert('Bạn đã thêm Doujinshi này rồi!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        }
+                    }
+                }
+            } else {
+                document.getElementById("status").innerText = "Không thể lấy được thông tin!";
+            }
+        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+    } else {
+        alert("Tên Doujinshi không hợp lệ!");
+    }
+}
+
+function addGroup() {
+    document.getElementById("status").innerText = "Đang kiểm tra thông tin...";
+    var value = document.getElementById("usrLink").value;
+    if (value.indexOf("https://") == -1 && value.length > 0) {
+        var userid = value.replace(" ", "").replace(" ", "").replace(" ", "").replace("-", "")
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.replace(/đ/g, "d")
+		.replace(/Đ/g, "D");
+        $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetGroupInfo.php?id=" + userid, function(data, status) {
+            if (status == "success") {
+                if (data == "Group is invalid") {
+                    alert('Nhóm dịch này không tồn tại!');
+                    document.getElementById("status").innerText = "Sẵn sàng.";
+                } else {
+                    document.getElementById("status").innerText = "Lấy thông tin thành công!";
+                    var info = JSON.parse(data);
+                    var ans = confirm("Thêm Nhóm dịch " + info.displayName + " vào Danh sách theo dõi?");
+                    if (ans) {
+                        var exist = false,
+                            i;
+                        for (i = 0; i < JSONData.group.length; i++) {
+                            if (JSONData.group[i].name != info.displayName) {
+                                if (!exist) {
+                                    exist = false;
+                                }
+                            } else {
+                                exist = true;
+                            }
+                        }
+                        if (exist == false) {
+                            JSONData.group[JSONData.group.length] = {
+                                id: userid,
+                                name: info.displayName
+                            };
+                            window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+                            alert('Thêm Nhóm dịch thành công!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        } else {
+                            alert('Bạn đã thêm Nhóm dịch này rồi!');
+                            document.getElementById("usrLink").value = "";
+                            document.getElementById("status").innerText = "Sẵn sàng.";
+                        }
+                    }
+                }
+            } else {
+                document.getElementById("status").innerText = "Không thể lấy được thông tin!";
+            }
+        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+    } else {
+        alert("Tên Nhóm dịch không hợp lệ!");
+    }
+}
+
+function clickButton() {
+    if (document.getElementById("usrType").value == "chuthot") {
+        addUsr();
+    } else if (document.getElementById("usrType").value == "author") {
+        addAuthor();
+    } else if (document.getElementById("usrType").value == "doujin") {
+        addDoujin();
+    } else if (document.getElementById("usrType").value == "group") {
+        addGroup();
+    }
+}
+
+function changeType() {
+    if (document.getElementById("usrType").value == "chuthot") {
+        document.getElementById("beginText").innerText = "Nhập Link User của Chủ thớt (https://hentaivn.net/user-xxxxx):";
+    } else if (document.getElementById("usrType").value == "author") {
+        document.getElementById("beginText").innerText = "Nhập tên tác giả muốn thêm:";
+    } else if (document.getElementById("usrType").value == "doujin") {
+        document.getElementById("beginText").innerText = "Nhập tên Doujinshi muốn thêm:";
+    } else if (document.getElementById("usrType").value == "group") {
+        document.getElementById("beginText").innerText = "Nhập tên Nhóm dịch muốn thêm:";
+    }
+}
+
+function ConfirmAddUsr() {
+    var exist = false,
+        i;
+    for (i = 0; i < JSONData.uploader.length; i++) {
+        if (JSONData.uploader[i].id != tempUsrId) {
+            if (!exist) {
+                exist = false;
+            }
+        } else {
+            exist = true;
+        }
+    }
+    if (exist == false) {
+        JSONData.uploader[JSONData.uploader.length] = {
+            id: tempUsrId,
+            avatar: document.getElementById("avatar").src,
+            name: document.getElementById("displayName").innerText
+        };
+        window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+        alert('Thêm Chủ thớt thành công!');
+        document.getElementById("usrLink").value = "";
+        modal.style.display = "none";
+        document.getElementById("status").innerText = "Sẵn sàng.";
+    } else {
+        alert('Bạn đã thêm Chủ thớt này rồi!');
+        document.getElementById("usrLink").value = "";
+        modal.style.display = "none";
+        document.getElementById("status").innerText = "Sẵn sàng.";
+    }
+}
+
+function deleteCt(i) {
+    var ans = confirm("Xác nhận xóa Chủ thớt " + JSONData.uploader[i].name + " ra khỏi Danh sách theo dõi?");
+    if (ans) {
+        window.localStorage.removeItem(JSONData.uploader[i].id);
+        JSONData.uploader.splice(i, 1);
+        window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+        alert("Xóa Chủ thớt thành công.");
+        if (JSONData.uploader.length == 0) {
+            document.getElementById("ctContainer").innerText = "Không có Chủ thớt nào được thêm.";
+        } else {
+            document.getElementById("ctContainer").innerHTML = "";
+            var i;
+            for (i = 0; i < JSONData.uploader.length; i++) {
+                document.getElementById("ctContainer").innerHTML += '<div id="list" style="height:80px"><img style="margin-top:5px" width=32 height=32 src="' + JSONData.uploader[i].avatar + '" /> <span style="font-size:14px;margin:auto"><b>' + JSONData.uploader[i].name + '</b></span><span style="font-size:14px;float:right;color:gray;padding-top:12px;padding-right:10px;">ID: ' + JSONData.uploader[i].id + '</span><br><button onclick="deleteCt(' + i + ')" style="float:right;margin:5px;">Xóa Chủ thớt</button></div>';
+            }
+        }
+    }
+}
+
+function deleteAuthor(i) {
+    var ans = confirm("Xác nhận xóa Tác giả " + JSONData.author[i].name + " ra khỏi Danh sách theo dõi?");
+    if (ans) {
+        window.localStorage.removeItem(JSONData.author[i].id);
+        JSONData.author.splice(i, 1);
+        window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+        alert("Xóa Tác giả thành công.");
+        if (JSONData.author.length == 0) {
+            document.getElementById("authorContainer").innerText = "Không có Tác giả nào được thêm.";
+        } else {
+            document.getElementById("authorContainer").innerHTML = "";
+            var i;
+            for (i = 0; i < JSONData.author.length; i++) {
+                document.getElementById("authorContainer").innerHTML += '<div id="list" style="height:38px"><span style="font-size:14px"><b>' + JSONData.author[i].name + '</b></span><button onclick="deleteAuthor(' + i + ')" style="float:right;margin:5px;">Xóa Tác giả</button></div>';
+            }
+        }
+    }
+}
+
+function deleteDoujin(i) {
+    var ans = confirm("Xác nhận xóa Doujinshi " + JSONData.doujin[i].name + " ra khỏi Danh sách theo dõi?");
+    if (ans) {
+        window.localStorage.removeItem(JSONData.doujin[i].id);
+        JSONData.doujin.splice(i, 1);
+        window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+        alert("Xóa Doujinshi thành công.");
+        if (JSONData.doujin.length == 0) {
+            document.getElementById("doujinContainer").innerText = "Không có Doujinshi nào được thêm.";
+        } else {
+            document.getElementById("doujinContainer").innerHTML = "";
+            var i;
+            for (i = 0; i < JSONData.doujin.length; i++) {
+                document.getElementById("doujinContainer").innerHTML += '<div id="list" style="height:38px"><span style="font-size:14px"><b>' + JSONData.doujin[i].name + '</b></span><button onclick="deleteDoujin(' + i + ')" style="float:right;margin:5px;">Xóa Doujinshi</button></div>';
+            }
+        }
+    }
+}
+
+function deleteGroup(i) {
+    var ans = confirm("Xác nhận xóa Nhóm dịch " + JSONData.group[i].name + " ra khỏi Danh sách theo dõi?");
+    if (ans) {
+        window.localStorage.removeItem(JSONData.group[i].id);
+        JSONData.group.splice(i, 1);
+        window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
+        alert("Xóa Nhóm dịch thành công.");
+        if (JSONData.group.length == 0) {
+            document.getElementById("groupContainer").innerText = "Không có Nhóm dịch nào được thêm.";
+        } else {
+            document.getElementById("groupContainer").innerHTML = "";
+            var i;
+            for (i = 0; i < JSONData.group.length; i++) {
+                document.getElementById("groupContainer").innerHTML += '<div id="list" style="height:38px"><span style="font-size:14px"><b>' + JSONData.group[i].name + '</b></span><button onclick="deletegroup(' + i + ')" style="float:right;margin:5px;">Xóa Nhóm dịch</button></div>';
+            }
+        }
+    }
+}
+
+function DeleteNoti() {
+    var ans = confirm("Xác nhận xóa tất cả thông báo hiện có?");
+    if (ans) {
+        Notifications = [];
+        window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
+        alert("Đã xóa hết tất cả thông báo.");
+    }
+}
+
+function SaveSettings() {
+    if (document.getElementById("updateTime").value >= 10) {
+        window.localStorage.setItem("updateTime", document.getElementById("updateTime").value);
+        window.localStorage.setItem("TagException", document.getElementById("tagException").value);
+        window.localStorage.setItem("TagContains", document.getElementById("tagContains").value);
+        if (document.getElementById("enableNotifications").checked) {
+            window.localStorage.setItem("enableNotifications", true);
+        } else {
+            window.localStorage.setItem("enableNotifications", false);
+        }
+        alert('Lưu cài đặt thành công. Nhấn OK để khởi động lại HVN Follower.');
+        navigator.app.exitApp();
+    } else {
+        alert('Thời gian cập nhật phải lớn hơn 10 giây để tránh lỗi.');
+    }
+}
+
+function Restore() {
+    var unique_key = prompt('Nhập đoạn mã mà bạn đã dùng trong khi sao lưu tại ô bên dưới:');
+    if (unique_key != "") {
+        $.get("http://ichika.shiru2005.tk/HVNFollower/FollowerList/" + unique_key + ".json", function(data, status) {
+            if (status == "success") {
+                var ans = confirm('Bạn có chắc chắn muốn khôi phục Danh sách sao lưu này không? Tất cả danh sách hiện tại sẽ bị xóa!');
+                if (ans) {
+					var JSONtemp = JSON.parse(data);
+					if (JSONtemp.group == undefined) {
+						JSONtemp.group = [];
+					}
+                    window.localStorage.setItem("HVNData", JSON.stringify(JSONtemp));
+                    alert('Khôi phục danh sách thành công. Nhấn OK để khởi động lại HVN Follower.');
+                    navigator.app.exitApp();
+                }
+            }
+        }).done(function() {}).fail(function() {
+            alert('Mã không tồn tại hoặc không thể truy cập được!');
+        }).always(function() {});
+    }
+}
+
+function Backup() {
+    var unique_key = prompt('Nhập đoạn mã bất kỳ để nhận ra tệp sao lưu của bạn với những người khác. Bạn cần ghi nhớ dòng chữ này để khôi phục danh sách của bạn về thiết bị khác.');
+    if (unique_key != "") {
+        $.get("http://ichika.shiru2005.tk/HVNFollower/FollowerList/" + unique_key + ".json", function(data, status) {
+            if (status == "success") {
+                alert('Mã sao lưu này đã tồn tại!');
+            }
+        }).done(function() {}).fail(function() {
+            $.post("http://ichika.shiru2005.tk/HVNFollower/JsonListUploader.php", {
+                unique_key: unique_key,
+                data: window.localStorage.getItem("HVNData")
+            }, function(data, status) {
+                if (status == "success" && data == "Upload successfully!") {
+                    alert('Sao lưu thành công!\nMã sao lưu của bạn là:\n' + unique_key + '\n\nBạn đã có thể khôi phục nó trên điện thoại khác hoặc là trên máy tính bằng cách nhập mã này ở phần Khôi phục.');
+                } else {
+                    alert('Sao lưu thất bại! Vui lòng thử lại sau.');
+                }
+            }).done(function() {}).fail(function() {
+                alert('Sao lưu thất bại! Vui lòng thử lại sau.');
+            }).always(function() {});
+        }).always(function() {});
+    }
+}
+
+function Debug() {
+    var debug_key = prompt('Nhập đoạn mã gỡ lỗi được cho bởi LilShieru:');
+    if (debug_key != "") {  $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
+            if (status == "success" && data == "Password incorrect") {
+                alert("Mã gỡ lỗi không đúng!");
+            }
+            else if (status == "success" && data != "Password incorrect") {
+                alert("Mở chế độ gỡ lỗi thành công!");
+                window.localStorage.setItem("debugPassword", debug_key);
+                $("#debugBtn").hide();
+                $("#debugResult").html(data);
+            }
+        });
+    }
+}
+
+function ConfirmBugReport() {
+    var error = prompt("Hãy nói cho LilShieru biết điều gì đã xảy ra với app này:");
+    if (error) {
+        var ans = confirm("Bạn chắc chắn muốn báo cáo lỗi này cho LilShieru?\n" + error);
+        if (ans) {
+            BugReport("userDefined", error, "", "");
+        }
+    }
+}
+
+function BugReport(type, msg, url, line) {
+    alert("Bạn đang chuẩn bị mở HentaiVN trên trình duyệt.\nĐảm bảo là bạn đã đăng nhập. Hãy nhấn nút Gửi trên trình duyệt sắp mở để có thể gửi báo cáo cho LilShieru.");
+    if (type == "userDefined") {
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", { openExternal: true });
+    }
+    if (type == "auto") {
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", { openExternal: true });
+    }
+}
