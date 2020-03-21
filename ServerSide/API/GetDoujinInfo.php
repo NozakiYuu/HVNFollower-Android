@@ -20,7 +20,7 @@ if ($_GET["id"]) {
    }
    $tagString = "";
    for ($i = 0; $i < count($tags); $i++){
-      $tagString = $tagString . '' . $tags[$i]->textContent . ',';
+      $tagString = $tagString . '' . str_replace(" ", "", $tags[$i]->textContent) . ',';
    }
    $info->tags = substr($tagString, 0, strlen($tagString) - 1);
    $info->comicLink = "https://hentaivn.net" . $finder->evaluate("string(//div[@class='box-description']//p[@style='font-size: 18px; line-height: 22px;']//a/@href)");
