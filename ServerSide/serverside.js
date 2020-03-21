@@ -60,7 +60,7 @@ else if (window.localStorage.getItem("updateTime") != null && parseInt(window.lo
 }
 if (window.localStorage.getItem("enableNotifications") == null)
     window.localStorage.setItem("enableNotifications", true);
-var version = "1.3"; 
+var version = "1.3.1"; 
 var updateTime = "14 tháng 3, 2020";
 window.onerror = function(msg, url, line) {
 	var ans = confirm("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy nhấn OK để báo lỗi này cho LilShieru. Nếu không, hãy nhấn Cancel để bỏ qua.");
@@ -207,7 +207,7 @@ window.setInterval(function() {
                     for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
                             for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x] == tagContains[y]) {
+                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
                                      contains = true;
                                 }
                             }
@@ -221,7 +221,7 @@ window.setInterval(function() {
                 for (var x = 0; x < tags.length; x++) {
                     if (!excepted) {
                         for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x] == tagException[y]) {
+                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
                                 excepted = true;
                             }
                         }
@@ -291,7 +291,7 @@ window.setInterval(function() {
                     for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
                             for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x] == tagContains[y]) {
+                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
                                      contains = true;
                                 }
                             }
@@ -305,7 +305,7 @@ window.setInterval(function() {
                 for (var x = 0; x < tags.length; x++) {
                     if (!excepted) {
                         for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x] == tagException[y]) {
+                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
                                 excepted = true;
                             }
                         }
@@ -375,7 +375,7 @@ window.setInterval(function() {
                     for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
                             for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x] == tagContains[y]) {
+                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
                                      contains = true;
                                 }
                             }
@@ -389,7 +389,7 @@ window.setInterval(function() {
                 for (var x = 0; x < tags.length; x++) {
                     if (!excepted) {
                         for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x] == tagException[y]) {
+                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
                                 excepted = true;
                             }
                         }
@@ -459,7 +459,7 @@ window.setInterval(function() {
                     for (var x = 0; x < tags.length; x++) {
                     if (!contains) {
                             for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x] == tagContains[y]) {
+                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
                                      contains = true;
                                 }
                             }
@@ -473,7 +473,7 @@ window.setInterval(function() {
                 for (var x = 0; x < tags.length; x++) {
                     if (!excepted) {
                         for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x] == tagException[y]) {
+                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
                                 excepted = true;
                             }
                         }
