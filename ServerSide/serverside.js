@@ -3,7 +3,7 @@ var seconds = 0,
     i = -1,
     iauthor = -1,
     idoujin = -1,
-	igroup = -1;
+    igroup = -1;
 var tagException = "";
 if (window.localStorage.getItem("TagException") != null) {
     var exception = window.localStorage.getItem("TagException");
@@ -36,7 +36,7 @@ if (window.localStorage.getItem("HVNData") != null) {
         uploader: [],
         author: [],
         doujin: [],
-		group: []
+        group: []
     };
     window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
 }
@@ -49,24 +49,26 @@ else {
 var busy = false,
     authorbusy = false,
     doujinbusy = false,
-	groupbusy = false;
+    groupbusy = false,
+    ping = "Chưa có",
+    pingNotified = false;
 if (window.localStorage.getItem("notis") == null)
     window.localStorage.setItem("notis", 0);
 if (window.localStorage.getItem("updateTime") == null)
     window.localStorage.setItem("updateTime", 10);
 else if (window.localStorage.getItem("updateTime") != null && parseInt(window.localStorage.getItem("updateTime")) < 10) {
-	alert("Thời gian cập nhật hiện tại của bạn ít hơn 10 giây, vì vậy nên app đã thay đổi thời gian cập nhật của bạn thành 10 giây để tránh lỗi.");
+    alert("Thời gian cập nhật hiện tại của bạn ít hơn 10 giây, vì vậy nên app đã thay đổi thời gian cập nhật của bạn thành 10 giây để tránh lỗi.");
     window.localStorage.setItem("updateTime", 10);
 }
 if (window.localStorage.getItem("enableNotifications") == null)
     window.localStorage.setItem("enableNotifications", true);
-var version = "1.3.1"; 
-var updateTime = "14 tháng 3, 2020";
+var version = "1.3.2";
+var updateTime = "14 tháng 8, 2020";
 window.onerror = function(msg, url, line) {
-	var ans = confirm("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy nhấn OK để báo lỗi này cho LilShieru. Nếu không, hãy nhấn Cancel để bỏ qua.");
-	if (ans) {
-	    BugReport("auto", msg, url, line);
-	}
+    var ans = confirm("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy nhấn OK để báo lỗi này cho LilShieru. Nếu không, hãy nhấn Cancel để bỏ qua.");
+    if (ans) {
+        BugReport("auto", msg, url, line);
+    }
 }
 document.getElementById("version").innerText = "v" + version;
 document.getElementById("versionInfo").innerText = version;
@@ -90,12 +92,12 @@ window.setInterval(function() {
     }
 }, 1000);
 if (window.localStorage.getItem("debugPassword") != null) {
-        $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + window.localStorage.getItem("debugPassword"), function(data, status) {
-            if (status == "success" && data != "Password incorrect") {
-                $("#debugBtn").hide();
-                $("#debugResult").html("Bạn đã được tự động vào chế độ gỡ lỗi do bạn đã nhập đúng mật khẩu trước đó. Để xóa bỏ chế độ tự động, hãy xóa biến debugPassword trong dữ liệu của app.<br><br>" + data);
-            }
-        });
+    $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + window.localStorage.getItem("debugPassword"), function(data, status) {
+        if (status == "success" && data != "Password incorrect") {
+            $("#debugBtn").hide();
+            $("#debugResult").html("Bạn đã được tự động vào chế độ gỡ lỗi do bạn đã nhập đúng mật khẩu trước đó. Để xóa bỏ chế độ tự động, hãy xóa biến debugPassword trong dữ liệu của app.<br><br>" + data);
+        }
+    });
 }
 window.setInterval(function() {
     if (busy == false) {
@@ -122,12 +124,11 @@ window.setInterval(function() {
     if (igroup == JSONData.group.length && groupbusy == false) {
         igroup = 0;
     }
-	if (JSONData.uploader.length > 0 || JSONData.author.length > 0 || JSONData.doujin.length > 0 || JSONData.group.length > 0) {
-		document.getElementById("status").innerText = "\nTiến trình cập nhật:\n";
-	}
-	else {
-		document.getElementById("status").innerText = "Không có Chủ thớt, Tác giả, Doujinshi hay Nhóm dịch nào!";
-	}
+    if (JSONData.uploader.length > 0 || JSONData.author.length > 0 || JSONData.doujin.length > 0 || JSONData.group.length > 0) {
+        document.getElementById("status").innerText = "\nTiến trình cập nhật:\n";
+    } else {
+        document.getElementById("status").innerText = "Không có Chủ thớt, Tác giả, Doujinshi hay Nhóm dịch nào!";
+    }
     if (JSONData.uploader.length > 0) {
         document.getElementById("status").innerText += "Chủ thớt: " + JSONData.uploader[i].name + "\n";
     }
@@ -140,11 +141,54 @@ window.setInterval(function() {
     if (JSONData.group.length > 0) {
         document.getElementById("status").innerText += "Nhóm dịch: " + JSONData.group[igroup].name + "\n";
     }
+    var pingTimestamp = (new Date()).getTime();
+    document.getElementById("status").innerText += "Ping: " + ping;
+    if (ping.indexOf("ms") != "-1" && parseInt(ping.substr(0, ping.length - 2)) > parseInt(window.localStorage.getItem("updateTime")) * 1000 && !pingNotified) {
+        var currentdate = new Date();
+        var datetime = currentdate.getDate() + "/" +
+            (currentdate.getMonth() + 1) + "/" +
+            currentdate.getFullYear() + " @ " +
+            currentdate.getHours() + ":" +
+            currentdate.getMinutes() + ":" +
+            currentdate.getSeconds();
+        Notifications[Notifications.length] = {
+            time: datetime,
+            text: 'Ping từ máy chủ HentaiVN đang lớn hơn thời gian cập nhật của app, điều này có thể gây ra lỗi. Vui lòng thay đổi lại thời gian cập nhật.',
+            link: 'https://hentaivn.net',
+            isread: false
+        };
+        window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
+        window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
+        if (window.localStorage.getItem("enableNotifications") == "true") {
+            if ("Notification" in window) {
+                Notification.requestPermission(function(permission) {
+                    if (permission === 'granted') {
+                        var notification = new Notification('HVN Follower', {
+                            tag: 'message1',
+                            body: 'Ping từ máy chủ HentaiVN đang lớn hơn thời gian cập nhật của app, điều này có thể gây ra lỗi. Vui lòng thay đổi lại thời gian cập nhật.'
+                        });
+                        notification.onshow = function() {
+                            console.log('show');
+                        };
+                        notification.onclose = function() {
+                            navigator.app.loadUrl(comicInfo.comicLink)
+                        };
+                        notification.onclick = function() {
+                            navigator.app.loadUrl(comicInfo.comicLink)
+                        };
+                    }
+                });
+                navigator.notification.beep(1);
+            }
+        }
+        pingNotified = true;
+    }
     if (JSONData.uploader.length > 0) {
         busy = true;
         console.log("Updating Uploader with i=" + i + ": ID - " + JSONData.uploader[i].id + "; Name - " + JSONData.uploader[i].name + ". Comic in LocalStorage is " + window.localStorage.getItem(JSONData.uploader[i].id));
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetComicInfo.php?id=" + JSONData.uploader[i].id, function(data, status) {
             if (status == "success") {
+                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log(JSONData.uploader[i].name + "'s DisplayName: " + comicInfo.displayName);
                 if (comicInfo.displayName != JSONData.uploader[i].name) {
@@ -153,13 +197,13 @@ window.setInterval(function() {
                     JSONData.uploader[i].name = comicInfo.displayName;
                     window.localStorage.setItem("HVNData", JSON.stringify(JSONData));
                     console.log(oldName + "'s new DisplayName: " + JSONData.uploader[i].name);
-                        var currentdate = new Date();
-                        var datetime = currentdate.getDate() + "/" +
-                            (currentdate.getMonth() + 1) + "/" +
-                            currentdate.getFullYear() + " @ " +
-                            currentdate.getHours() + ":" +
-                            currentdate.getMinutes() + ":" +
-                            currentdate.getSeconds();
+                    var currentdate = new Date();
+                    var datetime = currentdate.getDate() + "/" +
+                        (currentdate.getMonth() + 1) + "/" +
+                        currentdate.getFullYear() + " @ " +
+                        currentdate.getHours() + ":" +
+                        currentdate.getMinutes() + ":" +
+                        currentdate.getSeconds();
                     Notifications[Notifications.length] = {
                         time: datetime,
                         text: "Chủ thớt " + oldName + " đã đổi tên hiển thị thành " + comicInfo.displayName + ", hãy nhớ kĩ để tránh nhầm lẫn về sau!",
@@ -169,27 +213,27 @@ window.setInterval(function() {
                     window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
                     window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
                     if (window.localStorage.getItem("enableNotifications") == "true") {
-							if ("Notification" in window) {
-                                Notification.requestPermission(function(permission) {
-                                    if (permission === 'granted') {
-                                        var notification = new Notification('HVN Follower', {
-                                            tag: 'message1',
-                                            body: "Chủ thớt " + oldName + " đã đổi tên hiển thị thành " + comicInfo.displayName + ", hãy nhớ kĩ để tránh nhầm lẫn về sau!"
-                                        });
-                                        notification.onshow = function() {
-                                            console.log('show');
-                                        };
-                                        notification.onclose = function() {
-                                            console.log('close');
-                                        };
-                                        notification.onclick = function() {
-                                            navigator.app.loadUrl("https://hentaivn.net/user-" + JSONData.uploader[i].id)
-                                        };
-                                    }
-                                });
-                                navigator.notification.beep(1);
-                            }
-					}
+                        if ("Notification" in window) {
+                            Notification.requestPermission(function(permission) {
+                                if (permission === 'granted') {
+                                    var notification = new Notification('HVN Follower', {
+                                        tag: 'message1',
+                                        body: "Chủ thớt " + oldName + " đã đổi tên hiển thị thành " + comicInfo.displayName + ", hãy nhớ kĩ để tránh nhầm lẫn về sau!"
+                                    });
+                                    notification.onshow = function() {
+                                        console.log('show');
+                                    };
+                                    notification.onclose = function() {
+                                        console.log('close');
+                                    };
+                                    notification.onclick = function() {
+                                        navigator.app.loadUrl("https://hentaivn.net/user-" + JSONData.uploader[i].id)
+                                    };
+                                }
+                            });
+                            navigator.notification.beep(1);
+                        }
+                    }
                 }
                 if (comicInfo.avatar.indexOf("https://") == -1) {
                     comicInfo.avatar = "https://hentaivn.net" + comicInfo.avatar;
@@ -201,28 +245,30 @@ window.setInterval(function() {
                 }
                 console.log("Got the FirstComic for Uploader " + JSONData.uploader[i].name + ": " + comicInfo.firstComic);
                 var tags = comicInfo.tags;
-                tags = tags.split(",");
-                var contains = false;
-                if (tagContains.length != 0) {
-                    for (var x = 0; x < tags.length; x++) {
-                    if (!contains) {
-                            for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
-                                     contains = true;
+                if (tags) {
+                    tags = tags.split(",");
+
+                    var contains = false;
+                    if (tagContains.length != 0) {
+                        for (var x = 0; x < tags.length; x++) {
+                            if (!contains) {
+                                for (var y = 0; y < tagContains.length; y++) {
+                                    if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
+                                        contains = true;
+                                    }
                                 }
                             }
-                         }
-                     }
-                }
-                else {
-                    contains = true;
-                }
-                var excepted = false;
-                for (var x = 0; x < tags.length; x++) {
-                    if (!excepted) {
-                        for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
-                                excepted = true;
+                        }
+                    } else {
+                        contains = true;
+                    }
+                    var excepted = false;
+                    for (var x = 0; x < tags.length; x++) {
+                        if (!excepted) {
+                            for (var y = 0; y < tagException.length; y++) {
+                                if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
+                                    excepted = true;
+                                }
                             }
                         }
                     }
@@ -248,7 +294,7 @@ window.setInterval(function() {
                         window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
                         window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
                         if (window.localStorage.getItem("enableNotifications") == "true") {
-								if ("Notification" in window) {
+                            if ("Notification" in window) {
                                 Notification.requestPermission(function(permission) {
                                     if (permission === 'granted') {
                                         var notification = new Notification('HVN Follower', {
@@ -265,10 +311,10 @@ window.setInterval(function() {
                                             navigator.app.loadUrl(comicInfo.comicLink)
                                         };
                                     }
-                                    });
-                                    navigator.notification.beep(1);
-                                }
-						}
+                                });
+                                navigator.notification.beep(1);
+                            }
+                        }
                     }
                 } else {
                     window.localStorage.setItem(JSONData.uploader[i].id, comicInfo.firstComic);
@@ -281,32 +327,34 @@ window.setInterval(function() {
         authorbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetAuthorInfo.php?id=" + JSONData.author[iauthor].id, function(data, status) {
             if (status == "success") {
+                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for Author " + JSONData.author[iauthor].name + ": " + comicInfo.firstComic);
                 console.log("AuthorTag:" + comicInfo.tags);
                 var tags = comicInfo.tags;
-                tags = tags.split(",");
-                var contains = false;
-                if (tagContains.length != 0) {
-                    for (var x = 0; x < tags.length; x++) {
-                    if (!contains) {
-                            for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
-                                     contains = true;
+                if (tags) {
+                    tags = tags.split(",");
+                    var contains = false;
+                    if (tagContains.length != 0) {
+                        for (var x = 0; x < tags.length; x++) {
+                            if (!contains) {
+                                for (var y = 0; y < tagContains.length; y++) {
+                                    if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
+                                        contains = true;
+                                    }
                                 }
                             }
-                         }
-                     }
-                }
-                else {
-                    contains = true;
-                }
-                var excepted = false;
-                for (var x = 0; x < tags.length; x++) {
-                    if (!excepted) {
-                        for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
-                                excepted = true;
+                        }
+                    } else {
+                        contains = true;
+                    }
+                    var excepted = false;
+                    for (var x = 0; x < tags.length; x++) {
+                        if (!excepted) {
+                            for (var y = 0; y < tagException.length; y++) {
+                                if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
+                                    excepted = true;
+                                }
                             }
                         }
                     }
@@ -332,27 +380,27 @@ window.setInterval(function() {
                         window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
                         window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
                         if (window.localStorage.getItem("enableNotifications") == "true") {
-								if ("Notification" in window) {
-                                    Notification.requestPermission(function(permission) {
-                                        if (permission === 'granted') {
-                                            var notification = new Notification('HVN Follower', {
-                                                tag: 'message1',
-                                                body: 'Tác giả ' + JSONData.author[iauthor].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
-                                            });
-                                            notification.onshow = function() {
-                                                console.log('show');
-                                            };
-                                            notification.onclose = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                            notification.onclick = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                        }
-                                    });
-                                    navigator.notification.beep(1);
-                                }
-						}
+                            if ("Notification" in window) {
+                                Notification.requestPermission(function(permission) {
+                                    if (permission === 'granted') {
+                                        var notification = new Notification('HVN Follower', {
+                                            tag: 'message1',
+                                            body: 'Tác giả ' + JSONData.author[iauthor].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
+                                        });
+                                        notification.onshow = function() {
+                                            console.log('show');
+                                        };
+                                        notification.onclose = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                        notification.onclick = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                    }
+                                });
+                                navigator.notification.beep(1);
+                            }
+                        }
                     }
                 } else {
                     window.localStorage.setItem(JSONData.author[iauthor].id, comicInfo.firstComic);
@@ -365,32 +413,34 @@ window.setInterval(function() {
         doujinbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetDoujinInfo.php?id=" + JSONData.doujin[idoujin].id, function(data, status) {
             if (status == "success") {
+                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for doujin " + JSONData.doujin[idoujin].name + ": " + comicInfo.firstComic);
                 console.log("DoujinTag:" + comicInfo.tags);
                 var tags = comicInfo.tags;
-                tags = tags.split(",");
-                var contains = false;
-                if (tagContains.length != 0) {
-                    for (var x = 0; x < tags.length; x++) {
-                    if (!contains) {
-                            for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
-                                     contains = true;
+                if (tags) {
+                    tags = tags.split(",");
+                    var contains = false;
+                    if (tagContains.length != 0) {
+                        for (var x = 0; x < tags.length; x++) {
+                            if (!contains) {
+                                for (var y = 0; y < tagContains.length; y++) {
+                                    if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
+                                        contains = true;
+                                    }
                                 }
                             }
-                         }
-                     }
-                }
-                else {
-                    contains = true;
-                }
-                var excepted = false;
-                for (var x = 0; x < tags.length; x++) {
-                    if (!excepted) {
-                        for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
-                                excepted = true;
+                        }
+                    } else {
+                        contains = true;
+                    }
+                    var excepted = false;
+                    for (var x = 0; x < tags.length; x++) {
+                        if (!excepted) {
+                            for (var y = 0; y < tagException.length; y++) {
+                                if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
+                                    excepted = true;
+                                }
                             }
                         }
                     }
@@ -416,27 +466,27 @@ window.setInterval(function() {
                         window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
                         window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
                         if (window.localStorage.getItem("enableNotifications") == "true") {
-								if ("Notification" in window) {
-                                    Notification.requestPermission(function(permission) {
-                                        if (permission === 'granted') {
-                                            var notification = new Notification('HVN Follower', {
-                                                tag: 'message1',
-                                                body: 'Doujinshi ' + JSONData.doujin[idoujin].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
-                                            });
-                                            notification.onshow = function() {
-                                                console.log('show');
-                                            };
-                                            notification.onclose = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                            notification.onclick = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                        }
-                                    });
-                                    navigator.notification.beep(1);
-                                }
-						}
+                            if ("Notification" in window) {
+                                Notification.requestPermission(function(permission) {
+                                    if (permission === 'granted') {
+                                        var notification = new Notification('HVN Follower', {
+                                            tag: 'message1',
+                                            body: 'Doujinshi ' + JSONData.doujin[idoujin].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
+                                        });
+                                        notification.onshow = function() {
+                                            console.log('show');
+                                        };
+                                        notification.onclose = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                        notification.onclick = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                    }
+                                });
+                                navigator.notification.beep(1);
+                            }
+                        }
                     }
                 } else {
                     window.localStorage.setItem(JSONData.doujin[idoujin].id, comicInfo.firstComic);
@@ -449,32 +499,34 @@ window.setInterval(function() {
         groupbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetGroupInfo.php?id=" + JSONData.group[igroup].id, function(data, status) {
             if (status == "success") {
+                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for group " + JSONData.group[igroup].name + ": " + comicInfo.firstComic);
                 console.log("GroupTag:" + comicInfo.tags);
                 var tags = comicInfo.tags;
-                tags = tags.split(",");
-                var contains = false;
-                if (tagContains.length != 0) {
-                    for (var x = 0; x < tags.length; x++) {
-                    if (!contains) {
-                            for (var y = 0; y < tagContains.length; y++) {
-                                if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
-                                     contains = true;
+                if (tags) {
+                    tags = tags.split(",");
+                    var contains = false;
+                    if (tagContains.length != 0) {
+                        for (var x = 0; x < tags.length; x++) {
+                            if (!contains) {
+                                for (var y = 0; y < tagContains.length; y++) {
+                                    if (tags[x].replace(" ", "") == tagContains[y].replace(" ", "")) {
+                                        contains = true;
+                                    }
                                 }
                             }
-                         }
-                     }
-                }
-                else {
-                    contains = true;
-                }
-                var excepted = false;
-                for (var x = 0; x < tags.length; x++) {
-                    if (!excepted) {
-                        for (var y = 0; y < tagException.length; y++) {
-                            if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
-                                excepted = true;
+                        }
+                    } else {
+                        contains = true;
+                    }
+                    var excepted = false;
+                    for (var x = 0; x < tags.length; x++) {
+                        if (!excepted) {
+                            for (var y = 0; y < tagException.length; y++) {
+                                if (tags[x].replace(" ", "") == tagException[y].replace(" ", "")) {
+                                    excepted = true;
+                                }
                             }
                         }
                     }
@@ -500,27 +552,27 @@ window.setInterval(function() {
                         window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
                         window.localStorage.setItem("notis", parseInt(window.localStorage.getItem("notis")) + 1);
                         if (window.localStorage.getItem("enableNotifications") == "true") {
-								if ("Notification" in window) {
-                                    Notification.requestPermission(function(permission) {
-                                        if (permission === 'granted') {
-                                            var notification = new Notification('HVN Follower', {
-                                                tag: 'message1',
-                                                body: 'Nhóm dịch ' + JSONData.group[igroup].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
-                                            });
-                                            notification.onshow = function() {
-                                                console.log('show');
-                                            };
-                                            notification.onclose = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                            notification.onclick = function() {
-                                                navigator.app.loadUrl(comicInfo.comicLink)
-                                            };
-                                        }
-                                    });
-                                    navigator.notification.beep(1);
-                                }
-						}
+                            if ("Notification" in window) {
+                                Notification.requestPermission(function(permission) {
+                                    if (permission === 'granted') {
+                                        var notification = new Notification('HVN Follower', {
+                                            tag: 'message1',
+                                            body: 'Nhóm dịch ' + JSONData.group[igroup].name + ' đã có truyện mới "' + comicInfo.firstComic + '", vào xem nhanh kẻo muộn nào!'
+                                        });
+                                        notification.onshow = function() {
+                                            console.log('show');
+                                        };
+                                        notification.onclose = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                        notification.onclick = function() {
+                                            navigator.app.loadUrl(comicInfo.comicLink)
+                                        };
+                                    }
+                                });
+                                navigator.notification.beep(1);
+                            }
+                        }
                     }
                 } else {
                     window.localStorage.setItem(JSONData.group[igroup].id, comicInfo.firstComic);
@@ -746,7 +798,9 @@ function addUsr() {
             } else {
                 document.getElementById("status").innerText = "Không thể lấy được thông tin!";
             }
-        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+        }).fail(function() {
+            alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.")
+        });;
     } else {
         alert("Định dạng link không hợp lệ!");
     }
@@ -797,7 +851,9 @@ function addAuthor() {
             } else {
                 document.getElementById("status").innerText = "Không thể lấy được thông tin!";
             }
-        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+        }).fail(function() {
+            alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.")
+        });;
     } else {
         alert("Tên tác giả không hợp lệ!");
     }
@@ -848,7 +904,9 @@ function addDoujin() {
             } else {
                 document.getElementById("status").innerText = "Không thể lấy được thông tin!";
             }
-        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+        }).fail(function() {
+            alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.")
+        });;
     } else {
         alert("Tên Doujinshi không hợp lệ!");
     }
@@ -859,10 +917,10 @@ function addGroup() {
     var value = document.getElementById("usrLink").value;
     if (value.indexOf("https://") == -1 && value.length > 0) {
         var userid = value.replace(" ", "").replace(" ", "").replace(" ", "").replace("-", "")
-		.normalize("NFD")
-		.replace(/[\u0300-\u036f]/g, "")
-		.replace(/đ/g, "d")
-		.replace(/Đ/g, "D");
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D");
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetGroupInfo.php?id=" + userid, function(data, status) {
             if (status == "success") {
                 if (data == "Group is invalid") {
@@ -903,7 +961,9 @@ function addGroup() {
             } else {
                 document.getElementById("status").innerText = "Không thể lấy được thông tin!";
             }
-        }).fail(function() { alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.") });;
+        }).fail(function() {
+            alert("Không thể kết nối tới máy chủ!\nVui lòng thử lại sau.")
+        });;
     } else {
         alert("Tên Nhóm dịch không hợp lệ!");
     }
@@ -1073,10 +1133,10 @@ function Restore() {
             if (status == "success") {
                 var ans = confirm('Bạn có chắc chắn muốn khôi phục Danh sách sao lưu này không? Tất cả danh sách hiện tại sẽ bị xóa!');
                 if (ans) {
-					var JSONtemp = JSON.parse(data);
-					if (JSONtemp.group == undefined) {
-						JSONtemp.group = [];
-					}
+                    var JSONtemp = JSON.parse(data);
+                    if (JSONtemp.group == undefined) {
+                        JSONtemp.group = [];
+                    }
                     window.localStorage.setItem("HVNData", JSON.stringify(JSONtemp));
                     alert('Khôi phục danh sách thành công. Nhấn OK để khởi động lại HVN Follower.');
                     navigator.app.exitApp();
@@ -1114,11 +1174,11 @@ function Backup() {
 
 function Debug() {
     var debug_key = prompt('Nhập đoạn mã gỡ lỗi được cho bởi LilShieru:');
-    if (debug_key != "") {  $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
+    if (debug_key != "") {
+        $.get("http://ichika.shiru2005.tk/HVNFollower/CheckDebugKey.php?key=" + debug_key, function(data, status) {
             if (status == "success" && data == "Password incorrect") {
                 alert("Mã gỡ lỗi không đúng!");
-            }
-            else if (status == "success" && data != "Password incorrect") {
+            } else if (status == "success" && data != "Password incorrect") {
                 alert("Mở chế độ gỡ lỗi thành công!");
                 window.localStorage.setItem("debugPassword", debug_key);
                 $("#debugBtn").hide();
@@ -1141,9 +1201,13 @@ function ConfirmBugReport() {
 function BugReport(type, msg, url, line) {
     alert("Bạn đang chuẩn bị mở HentaiVN trên trình duyệt.\nĐảm bảo là bạn đã đăng nhập. Hãy nhấn nút Gửi trên trình duyệt sắp mở để có thể gửi báo cáo cho LilShieru.");
     if (type == "userDefined") {
-        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", { openExternal: true });
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", {
+            openExternal: true
+        });
     }
     if (type == "auto") {
-        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", { openExternal: true });
+        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", {
+            openExternal: true
+        });
     }
 }
