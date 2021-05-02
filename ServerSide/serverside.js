@@ -62,8 +62,8 @@ else if (window.localStorage.getItem("updateTime") != null && parseInt(window.lo
 }
 if (window.localStorage.getItem("enableNotifications") == null)
     window.localStorage.setItem("enableNotifications", true);
-var version = "1.3.2";
-var updateTime = "14 tháng 8, 2020";
+var version = "1.3.3";
+var updateTime = "2 tháng 5, 2021";
 window.onerror = function(msg, url, line) {
     var ans = confirm("Đã có lỗi xảy ra:\n" + msg + "\ntại địa chỉ: " + url.replace("http://ichika.shiru2005.tk/HVNFollower", "") + "\nở dòng số " + line + "\n\nHãy thử khởi động lại ứng dụng. Nếu lỗi vẫn tiếp tục xảy ra, hãy nhấn OK để báo lỗi này cho LilShieru. Nếu không, hãy nhấn Cancel để bỏ qua.");
     if (ans) {
@@ -154,7 +154,7 @@ window.setInterval(function() {
         Notifications[Notifications.length] = {
             time: datetime,
             text: 'Ping từ máy chủ HentaiVN đang lớn hơn thời gian cập nhật của app, điều này có thể gây ra lỗi. Vui lòng thay đổi lại thời gian cập nhật.',
-            link: 'https://hentaivn.net',
+            link: 'https://hentaivn.tv',
             isread: false
         };
         window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
@@ -188,7 +188,7 @@ window.setInterval(function() {
         console.log("Updating Uploader with i=" + i + ": ID - " + JSONData.uploader[i].id + "; Name - " + JSONData.uploader[i].name + ". Comic in LocalStorage is " + window.localStorage.getItem(JSONData.uploader[i].id));
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetComicInfo.php?id=" + JSONData.uploader[i].id, function(data, status) {
             if (status == "success") {
-                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
+                ping = (((new Date()).getTime() - pingTimestamp) * 4) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log(JSONData.uploader[i].name + "'s DisplayName: " + comicInfo.displayName);
                 if (comicInfo.displayName != JSONData.uploader[i].name) {
@@ -207,7 +207,7 @@ window.setInterval(function() {
                     Notifications[Notifications.length] = {
                         time: datetime,
                         text: "Chủ thớt " + oldName + " đã đổi tên hiển thị thành " + comicInfo.displayName + ", hãy nhớ kĩ để tránh nhầm lẫn về sau!",
-                        link: "https://hentaivn.net/user-" + JSONData.uploader[i].id,
+                        link: "https://hentaivn.tv/user-" + JSONData.uploader[i].id,
                         isread: false
                     };
                     window.localStorage.setItem("HVNNotifications", JSON.stringify(Notifications));
@@ -227,7 +227,7 @@ window.setInterval(function() {
                                         console.log('close');
                                     };
                                     notification.onclick = function() {
-                                        navigator.app.loadUrl("https://hentaivn.net/user-" + JSONData.uploader[i].id)
+                                        navigator.app.loadUrl("https://hentaivn.tv/user-" + JSONData.uploader[i].id)
                                     };
                                 }
                             });
@@ -236,7 +236,7 @@ window.setInterval(function() {
                     }
                 }
                 if (comicInfo.avatar.indexOf("https://") == -1) {
-                    comicInfo.avatar = "https://hentaivn.net" + comicInfo.avatar;
+                    comicInfo.avatar = "https://hentaivn.tv" + comicInfo.avatar;
                 }
                 if (comicInfo.avatar != JSONData.uploader[i].avatar) {
                     JSONData.uploader[i].avatar = comicInfo.avatar;
@@ -327,7 +327,7 @@ window.setInterval(function() {
         authorbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetAuthorInfo.php?id=" + JSONData.author[iauthor].id, function(data, status) {
             if (status == "success") {
-                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
+                ping = (((new Date()).getTime() - pingTimestamp) * 4) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for Author " + JSONData.author[iauthor].name + ": " + comicInfo.firstComic);
                 console.log("AuthorTag:" + comicInfo.tags);
@@ -413,7 +413,7 @@ window.setInterval(function() {
         doujinbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetDoujinInfo.php?id=" + JSONData.doujin[idoujin].id, function(data, status) {
             if (status == "success") {
-                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
+                ping = (((new Date()).getTime() - pingTimestamp) * 4) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for doujin " + JSONData.doujin[idoujin].name + ": " + comicInfo.firstComic);
                 console.log("DoujinTag:" + comicInfo.tags);
@@ -499,7 +499,7 @@ window.setInterval(function() {
         groupbusy = true;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetGroupInfo.php?id=" + JSONData.group[igroup].id, function(data, status) {
             if (status == "success") {
-                ping = ((new Date()).getTime() - pingTimestamp) + "ms";
+                ping = (((new Date()).getTime() - pingTimestamp) * 4) + "ms";
                 var comicInfo = JSON.parse(data);
                 console.log("Got the FirstComic for group " + JSONData.group[igroup].name + ": " + comicInfo.firstComic);
                 console.log("GroupTag:" + comicInfo.tags);
@@ -754,7 +754,7 @@ function getSecondPart(str) {
 function addUsr() {
     document.getElementById("status").innerText = "Đang kiểm tra thông tin...";
     var value = document.getElementById("usrLink").value;
-    if (value.indexOf("hentaivn.net/user-") != -1 || value.indexOf("hentaivn.net/forum/user-") != -1) {
+    if (value.indexOf("hentaivn.tv/user-") != -1 || value.indexOf("hentaivn.tv/forum/user-") != -1) {
         var userid = getSecondPart(value);
         tempUsrId = userid;
         $.get("http://hvnfollower.herokuapp.com/HVNFollower/API/GetFullInfo.php?id=" + userid, function(data, status) {
@@ -772,7 +772,7 @@ function addUsr() {
                     modal.style.display = "block";
 
                     if (info.avatar.indexOf("https://") == -1) {
-                        info.avatar = "https://hentaivn.net" + info.avatar;
+                        info.avatar = "https://hentaivn.tv" + info.avatar;
                     }
                     if (info.group == "none") {
                         document.getElementById("groupContainer").style.display = "none";
@@ -983,7 +983,7 @@ function clickButton() {
 
 function changeType() {
     if (document.getElementById("usrType").value == "chuthot") {
-        document.getElementById("beginText").innerText = "Nhập Link User của Chủ thớt (https://hentaivn.net/user-xxxxx):";
+        document.getElementById("beginText").innerText = "Nhập Link User của Chủ thớt (https://hentaivn.tv/user-xxxxx):";
     } else if (document.getElementById("usrType").value == "author") {
         document.getElementById("beginText").innerText = "Nhập tên tác giả muốn thêm:";
     } else if (document.getElementById("usrType").value == "doujin") {
@@ -1201,12 +1201,12 @@ function ConfirmBugReport() {
 function BugReport(type, msg, url, line) {
     alert("Bạn đang chuẩn bị mở HentaiVN trên trình duyệt.\nĐảm bảo là bạn đã đăng nhập. Hãy nhấn nút Gửi trên trình duyệt sắp mở để có thể gửi báo cáo cho LilShieru.");
     if (type == "userDefined") {
-        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", {
+        navigator.app.loadUrl("https://hentaivn.tv/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + ". Mong bạn xem xét giúp mình!", {
             openExternal: true
         });
     }
     if (type == "auto") {
-        navigator.app.loadUrl("https://hentaivn.net/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", {
+        navigator.app.loadUrl("https://hentaivn.tv/forum/nhan_tin.php?user=108808&noidung=Mình đã gặp lỗi trong khi sử dụng app HVN Follower. Lỗi cụ thể như thế này: " + msg + " (tại địa chỉ web: " + url.substr(0, url.indexOf("?")).replace("http://ichika.shiru2005.tk/HVNFollower", "") + " - ở dòng số " + line + "). Mong bạn xem xét giúp mình!", {
             openExternal: true
         });
     }
